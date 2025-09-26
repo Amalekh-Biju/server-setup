@@ -37,8 +37,7 @@ echo ""
 # 2. Install the New Service with the New Token
 # ---------------------------------------------
 echo "Installing new cloudflared service with the provided token..."
-cloudflared service install "$NEW_SERVICE_TOKEN"
-
+sudo cloudflared service install eyJhIjoiMmUxMGZiYmFiOThhNzM1OGYwNWU2ODRmMjUyMzM4NDQiLCJ0IjoiNTNiMmI5MDQtZWMwMS00NTJhLWE5NWUtZDc1M2EwN2U0MTdjIiwicyI6Ik9URmhZalUwTXpJdFlUWTVaQzAwTUdWbUxXSTFZell0TjJZM1pEWTBaR1UzWXpZMiJ9
 echo "✅ New service installed."
 
 # 3. Verify the New Service
