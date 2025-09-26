@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# cloudflared-swap-tunnel.sh
+# Uninstalls any old cloudflared service and installs a new one using a specific token.
+#
+
+# --- User Configuration ---
+# ⚠️ This script uses the new service install token you provided.
+# ---------------------------
+NEW_SERVICE_TOKEN="eyJhIjoiMmUxMGZiYmFiOThhNzM1OGYwNWU2ODRmMjUyMzM4NDQiLCJ0IjoiNTNiMmI5MDQtZWMwMS00NTJhLWE5NWUtZDc1M2EwN2U0MTdjIiwicyI6Ik9URmhZalUwTXpJdFlUWTVaQzAwTUdWbUxXSTFZell0TjJZM1pEWTBaR1UzWXpZMiJ9"
+# ---------------------------
+
+
+# Ensure the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run this script with sudo or as root."
+  exit 1
+fi
+
+# Stop immediately if any command fails
+set -e
+
+echo "--- Starting Cloudflare Tunnel Swap Process ---"
+
+# 1. Stop and Uninstall the Old Service
+# --------------------------------------
+echo "Attempting to stop any existing cloudflared service..."
+# The '|| true' prevents the script from exiting if the service doesn't exist, making it safe to run on new servers.
+systemctl stop cloudflared || true
+
+echo "Uninstalling any old cloudflared service configuration..."
+cloudflared service uninstall || true
+
+echo "✅ Old service removed successfully (if it existed)."
+echo ""
+
+# 2. Install the New Service with the New Token
+# ---------------------------------------------
+echo "Installing new cloudflared service with the provided token..."
+cloudflared service install "$NEW_SERVICE_TOKEN"
+
+echo "✅ New service installed."
+
+# 3. Verify the New Service
+# -------------------------
+echo "⏳ Waiting for the new service to start..."
+sleep 5
+
+echo "Checking the status of the new service:"
+systemctl status cloudflared --no-pager --full
+
+echo ""
+echo "🎉 Tunnel swap complete! The new dedicated service should now be active."
